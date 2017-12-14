@@ -7,25 +7,43 @@ through SOAP protocol.
 
 ### Methods
 
-### `PostAsync\<T\>(string method, object data = null)`
-Makes an asynchronous POST request to the defined method in
-the server configured and returns the result as an object of
-the defined type.
+#### `Post(string method, object data = null)`
+Makes a POST request to the defined method in the configured
+server.
 
-The `T` type is optional. If not set, the method won't return
-anything.
+#### `Post<T>(string method, object data = null)`
+Makes a POST request to the defined method in the configured
+server and returns the result as an object of the defined type.
+Returns an object of type `T` with the result retrieved from
+the SOAP response.
 
-##### `T`
+#### `PostAsync(string method, object data = null)`
+Makes an asynchronous POST request to the defined method in the
+configured server.
+
+#### `PostAsync<T>(string method, object data = null)`
+Makes an asynchronous POST request to the defined method in the
+configured server and returns the result as an object of the
+defined type. Returns an object of type `T` with the result
+retrieved from the SOAP response.
+
+#### Parameters
+
+**`T`**
 Type of the response object returned.
-##### `method`
+
+**`method`**
 Name of the web method inside the web service request.
-##### `data`
+
+**`data`**
 Parameters to send in the request message (optional).
 
-The method returns an object of the defined type `T` with the
-result retrieved from the SOAP response.
+### Requirements
+This library requires System.Net.Http 4.0 or above, which can be
+found in the .NET assemblies or downloaded through
+[Nuget](https://www.nuget.org/packages/System.Net.Http/).
 
-#### Example
+### Example
 ``` C#
 using (SOAPClient client = new SOAPClient(
     "https://www.w3schools.com/xml/tempconvert.asmx",

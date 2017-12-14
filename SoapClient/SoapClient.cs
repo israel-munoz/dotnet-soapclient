@@ -68,7 +68,7 @@
                 _client.DefaultRequestHeaders.Remove(header);
             }
             _client.DefaultRequestHeaders.Add(header,
-                _serviceNamespace + method);
+                $"{_serviceNamespace}{(_serviceNamespace.EndsWith("/") ? "" : "/")}{method}");
         }
 
         /// <summary>
@@ -172,7 +172,7 @@
 
         /// <summary>
         /// Makes an asynchronous POST request to the defined method in the
-        /// server configured and returns the result as an object of the
+        /// configured server and returns the result as an object of the
         /// defined type.
         /// </summary>
         /// <typeparam name="T">
@@ -216,14 +216,17 @@
                 throw new HttpRequestException(error.Message);
             }
 
-            T result = DeserializeData<T>(method + "Result", xmlResult, _serviceNamespace);
+            T result = DeserializeData<T>(
+                method + "Result",
+                xmlResult,
+                _serviceNamespace);
 
             return result;
         }
 
         /// <summary>
         /// Makes an asynchronous POST request to the defined method in the
-        /// server configured.
+        /// configured server.
         /// </summary>
         /// <param name="method">
         /// Name of the web method inside the web service request.
@@ -234,6 +237,43 @@
         public async Task PostAsync(string method, object data = null)
         {
             await PostAsync<object>(method, data);
+        }
+
+        /// <summary>
+        /// Makes a POST request to the defined method in the configured
+        /// server and returns the result as an object of the defined type.
+        /// </summary>
+        /// <typeparam name="T">
+        /// <see cref="Type"/> of the response object returned.
+        /// </typeparam>
+        /// <param name="method">
+        /// Name of the web method inside the web service request.
+        /// </param>
+        /// <param name="data">
+        /// Parameters to send in the request message.
+        /// </param>
+        /// <returns>
+        /// Returns an object of type <see cref="T"/> with the result
+        /// retrieved from the SOAP response.
+        /// </returns>
+        public T Post<T>(string method, object data = null)
+        {
+            return PostAsync<T>(method, data).Result;
+        }
+
+        /// <summary>
+        /// Makes a POST request to the defined method in the configured
+        /// server.
+        /// </summary>
+        /// <param name="method">
+        /// Name of the web method inside the web service request.
+        /// </param>
+        /// <param name="data">
+        /// Parameters to send in the request message.
+        /// </param>
+        public void Post(string method, object data = null)
+        {
+            PostAsync(method, data).GetAwaiter().GetResult();
         }
 
         /// <summary>
